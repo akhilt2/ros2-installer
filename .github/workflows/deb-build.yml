@@ -23,12 +23,14 @@ jobs:
       with:
         python-version: '3.12'
 
-    # Install dependencies
-    - name: Install Build Dependencies
+    # Install ROS 2 dependencies and add repositories
+    - name: Add ROS 2 repository and install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          python3-colcon-common-extensions \
+        sudo apt update
+        sudo apt install -y curl gnupg2 lsb-release
+        curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros2.repos -o /tmp/ros2.repos
+        sudo apt update
+        sudo apt install -y python3-colcon-common-extensions \
           debhelper \
           curl \
           software-properties-common \
