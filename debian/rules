@@ -1,4 +1,7 @@
 #!/usr/bin/make -f
 
+# Set compatibility level to 7 (or higher)
+export DH_COMPAT=7
+
 %:
-	dh $@ --with python3  
+    dh $@
