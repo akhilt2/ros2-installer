@@ -5,3 +5,4 @@ export DH_COMPAT=7
 
 # This is the default target (called when no target is given)
 %:dh $@
+clean:dh clean
