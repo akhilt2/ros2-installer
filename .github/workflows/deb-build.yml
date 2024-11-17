@@ -10,28 +10,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04  # You can adjust this to use a different Ubuntu version if necessary
+    runs-on: ubuntu-22.04  # Specify correct Ubuntu version
 
     steps:
     # Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Set up Python
+    # Set up Python and install dependencies
     - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
 
-    # Install ROS 2 dependencies and add repositories
-    - name: Add ROS 2 repository and install dependencies
+    - name: Install dependencies
       run: |
         sudo apt update
         sudo apt install -y curl gnupg2 lsb-release
-        curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros2.repos -o /tmp/ros2.repos
-        sudo apt update
-        sudo apt install -y python3-colcon-common-extensions \
-          debhelper \
+        # Install necessary system dependencies
+        sudo apt install -y debhelper \
           curl \
           software-properties-common \
           locales \
@@ -41,16 +38,14 @@ jobs:
           dh-make \
           libtool \
           dh-python
+        # Install ROS 2 dependencies via pip
+        python3 -m pip install colcon-common-extensions
 
-    # Make debian/rules executable
-    - name: Make debian/rules executable
-      run: chmod +x debian/rules
-
-    # Build the .deb package
+    # Build the .deb package without using debian/rules
     - name: Build the .deb package
       run: dpkg-buildpackage -us -uc -b -d
 
-    # Upload the built .deb package as an artifact (optional)
+    # Upload the built .deb package as an artifact
     - name: Upload .deb package as artifact
       uses: actions/upload-artifact@v3
       with:
