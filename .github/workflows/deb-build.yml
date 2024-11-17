@@ -1,41 +1,44 @@
-name: Build and Publish .deb Package
+name: Build ROS 2 Installer .deb
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    
+    runs-on: ubuntu-22.04  # You can also use ubuntu-20.04 if needed
+
     steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      # Set up Python (needed for colcon build, if applicable)
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Install dependencies required to build .deb packages
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential dpkg-dev curl python3-colcon-common-extensions
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      # Set up the workspace and build the .deb package
-      - name: Build .deb package
-        run: |
-          make build
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential devscripts debhelper fakeroot
 
-      # Upload the .deb package as a release asset
-      - name: Create GitHub Release
-        uses: gh-actions/gh-release@v1.1.1
-        with:
-          tag_name: v1.0.0
-          files: ros2-installer_1.0.0_amd64.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build .deb package
+      run: |
+        dpkg-buildpackage -us -uc -b
+
+    - name: Upload .deb file as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ros2-installer
+        path: ../*.deb
+
+    - name: Create GitHub Release and upload .deb
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ../*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
