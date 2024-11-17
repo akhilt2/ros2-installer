@@ -31,7 +31,7 @@ jobs:
         dpkg-buildpackage -us -uc -b
 
     - name: Upload .deb file as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ros2-installer
         path: ../*.deb
