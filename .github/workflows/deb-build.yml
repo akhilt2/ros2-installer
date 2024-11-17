@@ -1,44 +1,56 @@
-name: Build ROS 2 Installer .deb
+name: Build and Package ROS 2 Installer
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger this workflow on push to the 'main' branch
   pull_request:
     branches:
-      - main
+      - main  # Trigger this workflow on pull request to the 'main' branch
 
 jobs:
   build:
-    runs-on: ubuntu-22.04  # You can also use ubuntu-20.04 if needed
+    runs-on: ubuntu-22.04  # You can adjust this to use a different Ubuntu version if necessary
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    # Checkout the repository
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    # Set up Python
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.12'
 
-    - name: Install dependencies
+    # Install dependencies
+    - name: Install Build Dependencies
       run: |
-        sudo apt update
-        sudo apt install -y build-essential devscripts debhelper fakeroot
+        sudo apt-get update
+        sudo apt-get install -y \
+          python3-colcon-common-extensions \
+          debhelper \
+          curl \
+          software-properties-common \
+          locales \
+          build-essential \
+          fakeroot \
+          devscripts \
+          dh-make \
+          libtool \
+          dh-python
 
-    - name: Build .deb package
-      run: |
-        dpkg-buildpackage -us -uc -b
+    # Make debian/rules executable
+    - name: Make debian/rules executable
+      run: chmod +x debian/rules
 
-    - name: Upload .deb file as artifact
-      uses: actions/upload-artifact@v4
+    # Build the .deb package
+    - name: Build the .deb package
+      run: dpkg-buildpackage -us -uc -b -d
+
+    # Upload the built .deb package as an artifact (optional)
+    - name: Upload .deb package as artifact
+      uses: actions/upload-artifact@v3
       with:
-        name: ros2-installer
+        name: ros2-installer-deb
         path: ../*.deb
-
-    - name: Create GitHub Release and upload .deb
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ../*.deb
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
