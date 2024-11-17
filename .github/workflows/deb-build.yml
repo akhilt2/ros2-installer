@@ -1,0 +1,41 @@
+name: Build and Publish .deb Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      # Set up Python (needed for colcon build, if applicable)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      # Install dependencies required to build .deb packages
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential dpkg-dev curl python3-colcon-common-extensions
+
+      # Set up the workspace and build the .deb package
+      - name: Build .deb package
+        run: |
+          make build
+
+      # Upload the .deb package as a release asset
+      - name: Create GitHub Release
+        uses: gh-actions/gh-release@v1.1.1
+        with:
+          tag_name: v1.0.0
+          files: ros2-installer_1.0.0_amd64.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
