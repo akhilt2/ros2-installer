@@ -31,21 +31,18 @@ jobs:
           debhelper \
           fakeroot \
           curl \
+          devscripts \
           software-properties-common \
           locales \
           build-essential \
           dh-make \
           libtool \
-          dh-python \
-          python3-colcon-common-extensions
-
-    # Ensure debian/rules is executable
-    - name: Make debian/rules executable
-      run: chmod +x debian/rules
+          dh-python 
+        pip3 install colcon-common-extensions
 
     # Build the .deb package
     - name: Build the .deb package
-      run: dpkg-buildpackage -us -uc -b -d
+      run: dpkg-buildpackage -us -uc -b 
 
     # Upload the built .deb package as an artifact (optional)
     - name: Upload .deb package as artifact
