@@ -38,8 +38,9 @@ jobs:
           dh-make \
           libtool \
           dh-python 
-        pip3 install colcon-common-extensions
-
+        curl -s https://packagecloud.io/install/repositories/dirk-thomas/colcon/script.deb.sh | sudo bash
+        sudo apt install python3-colcon-common-extensions
+    
     # Build the .deb package
     - name: Build the .deb package
       run: dpkg-buildpackage -us -uc -b 
