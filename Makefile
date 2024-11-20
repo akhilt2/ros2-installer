@@ -20,9 +20,6 @@ build:
 	mkdir -p $(DEB_STRUCTURE)/usr/local/bin
 	mkdir -p $(DEB_STRUCTURE)/usr/share/doc/$(PKG_NAME)
 	
-	sudo dpkg --clear-avail
-	sudo apt-get update
-
 	# Copy the control file
 	cp debian/control $(DEB_STRUCTURE)/DEBIAN/
 	
