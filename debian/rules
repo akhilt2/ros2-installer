@@ -1,9 +1,6 @@
 #!/usr/bin/make -f
 
-# Set compatibility level to 7 (or higher)
-export DH_COMPAT=7
-
-# This is the default target (called when no target is given)
+# Default target
 %:
 	dh $@
 
