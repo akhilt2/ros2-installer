@@ -20,6 +20,8 @@ build:
 	mkdir -p $(DEB_STRUCTURE)/usr/local/bin
 	mkdir -p $(DEB_STRUCTURE)/usr/share/doc/$(PKG_NAME)
 	
+	dpkg --clear-avail
+
 	# Copy the control file
 	cp debian/control $(DEB_STRUCTURE)/DEBIAN/
 	
