@@ -3,10 +3,10 @@ name: Build and Package ROS 2 Installer
 on:
   push:
     branches:
-      - akhil-github-action-test # Trigger this workflow on push to the 'main' branch
+      - akhil # Trigger this workflow on push to the 'akhil' branch
   pull_request:
     branches:
-      - akhil-github-action-test # Trigger this workflow on pull request to the 'main' branch
+      - akhil # Trigger this workflow on pull request to the 'akhil' branch
 
 jobs:
   build:
