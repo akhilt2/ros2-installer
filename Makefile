@@ -21,10 +21,10 @@ build:
 	mkdir -p $(DEB_STRUCTURE)/usr/share/doc/$(PKG_NAME)
 	
 	# Copy the control file
-	cp DEBIAN/control $(DEB_STRUCTURE)/DEBIAN/
+	cp debian/control $(DEB_STRUCTURE)/DEBIAN/
 	
 	# Copy the post-installation script
-	cp DEBIAN/postinst $(DEB_STRUCTURE)/DEBIAN/
+	cp debian/postinst $(DEB_STRUCTURE)/DEBIAN/
 	
 	# Copy the installer script to the bin folder
 	cp scripts/install_ros2.sh $(DEB_STRUCTURE)/usr/local/bin/
