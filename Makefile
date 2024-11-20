@@ -37,7 +37,7 @@ build:
 # Target to clean the build directory
 clean:
 	@echo "Cleaning up build files..."
-#	rm -rf $(DEB_STRUCTURE)
+	rm -rf $(DEB_STRUCTURE)
 
 # Install the package (optional)
 install: build
