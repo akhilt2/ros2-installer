@@ -1,8 +1,9 @@
 #!/usr/bin/make -f
 
+# Default target
 %:
 	dh $@
 
-override_dh_auto_clean:
-	# Skip distclean if not supported
-	[ -f Makefile ] && $(MAKE) distclean || true
+clean:
+	dh clean
+
