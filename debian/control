@@ -2,7 +2,7 @@ Source: ros2-installer
 Section: utils
 Priority: optional
 Maintainer: Mohammed Rashith KP <mohammedrashithkp@gmail.com>
-Build-Depends: debhelper-compact (= 13), python3-colcon-common-extensions
+Build-Depends: debhelper-compat (= 13), python3-colcon-common-extensions
 Standards-Version: 4.5.0
 Homepage: https://github.com/mohammedrashithkp/ros2-installer
 
