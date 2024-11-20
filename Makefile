@@ -1,7 +1,7 @@
 
 ### 2. **Makefile**
 
-The `Makefile` will automate the process of building the `.deb` package. It assumes you have `dpkg-deb` and other necessary tools for creating Debian packages installed.
+# The `Makefile` will automate the process of building the `.deb` package. It assumes you have `dpkg-deb` and other necessary tools for creating Debian packages installed.
 
 ```makefile
 # Makefile to build ROS 2 Installer .deb package
