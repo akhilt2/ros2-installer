@@ -10,27 +10,25 @@ This repository contains a custom installer package for setting up ROS 2 (Jazzy/
 
 ## Prerequisites
 
-- Ubuntu 22.04 (Jammy) or 24.04 (Noble).
+- Ubuntu 22.04 (Jammy) : ROS2 Iron or Ros2 Humble 
+- Ubuntu 24.04 (Noble) : ROS2 Jazzy
 - A system with `curl`, `git`, and basic build tools installed.
 
-## Building the `.deb` Package
-
-To build the `.deb` package, you can use the `Makefile` provided in this repository. Follow these steps:
+## How to Use
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/mohammedrashithkp/ros2-installer.git
-   cd ros2-installer
-   ```
+   cd ros2-installer  ```
 
-2. **Build the package**: Use the following command to create the .deb       package:
-    ```bash 
-    make build
-    ```
+2. **Install Dependencies**:Run the pre-installation script to install the dependencies using: 
+   ```bash
+   sudo chmod +x preinst.sh
+   ./preinst.sh ```
 
 3. **Install the package**: After building, you can install the .deb package using:
     ```bash
-    sudo dpkg -i ros2-installer_1.0.0_amd64.deb
+    sudo dpkg -i ros2-installer.deb
     ```
 
 ## GitHub Actions
