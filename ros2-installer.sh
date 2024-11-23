@@ -2,47 +2,47 @@
 
 set -e
 
+# Enable colors
+RED='\e[31m'
+GREEN='\e[32m'
+BLUE='\e[34m'
+YELLOW='\e[33m'
+CYAN='\e[36m'
+BOLD='\e[1m'
+RESET='\e[0m'
+
+# Function to display styled output like 'nala'
+display_in_container() {
+    local title=$1
+    shift
+    local command="$@"
+
+    echo -e "${CYAN}${BOLD}============================${RESET}"
+    echo -e "${BLUE}${BOLD}$title${RESET}"
+    echo -e "${CYAN}${BOLD}============================${RESET}"
+
+    $command 2>&1 | while read -r line; do
+        echo -e "${YELLOW}▶ ${RESET}$line"
+    done
+
+    echo -e "${CYAN}${BOLD}============================${RESET}\n"
+}
+
 # Function to get the Ubuntu version codename
 get_ubuntu_version() {
     VERSION_CODENAME=$(lsb_release -c | awk '{print $2}')
     echo $VERSION_CODENAME
 }
 
-sll() {
-    local num_lines=$1  # Number of lines to show
-    shift               # Remove the first argument (num_lines) from the list
-    local command="$@"  # Remaining arguments are the command to execute
-
-    # Array to store the last N lines
-    local output=()
-
-    # Run the command and process its output
-    eval "$command" | while read -r line; do
-        # Append the line to the output array
-        output+=("$line")
-
-        # Remove the oldest line if the array exceeds the limit
-        if [ "${#output[@]}" -gt "$num_lines" ]; then
-            unset output[0]
-        fi
-
-        # Clear the screen and display the last N lines
-        clear
-        printf "%s\n" "${output[@]}"
-    done
-}
-
 # Check if the current OS version is supported
 check_os_version() {
     VERSION=$(get_ubuntu_version)
 
-    # Jazzy supports only Ubuntu 24.04 (Noble)
     if [[ "$VERSION" == "noble" ]]; then
         ROS_DISTRO="jazzy"
         echo "Supported OS: Ubuntu 24.04 (Noble). Proceeding with ROS 2 Jazzy setup."
-    # Humble and Iron support only Ubuntu 22.04 (Jammy)
     elif [[ "$VERSION" == "jammy" ]]; then
-        read -p "Enter ROS2 Distro to be installed:(humble/iron) " ROS_DISTRO
+        read -p "Enter ROS2 Distro to be installed (humble/iron): " ROS_DISTRO
         echo "Supported OS: Ubuntu 22.04 (Jammy). Proceeding with ROS 2 $ROS_DISTRO setup."
     else
         echo "Unsupported OS version. This script supports only Ubuntu 22.04 (Jammy) or Ubuntu 24.04 (Noble)."
@@ -54,9 +54,8 @@ check_os_version() {
 check_os_version
 
 # Ensure system dependencies are met
-echo "Ensuring system dependencies..."
-sll 5 apt-get update -y
-sll 5 apt-get install -y curl software-properties-common locales 
+display_in_container "Updating System" apt-get update -y
+display_in_container "Installing Dependencies" apt-get install -y curl software-properties-common locales 
 
 # Set up locales
 echo "Setting up locales..."
@@ -64,24 +63,15 @@ locale-gen en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-# Update package lists to include the new repository
-echo "Updating package lists..."
-sll 5 apt-get update -y 
-
-
-# Add the ROS 2 repository depending on the version
-echo "Adding ROS 2  repository..."
-sll 5 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg  
+# Add the ROS 2 repository
+display_in_container "Adding ROS 2 Repository" curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-
-# Update the system after adding the ROS repository
-echo "Updating package lists..."
-sll 5 sudo apt update 
+# Update package lists
+display_in_container "Updating Package Lists After Adding Repository" apt update
 
 # Install the relevant ROS 2 packages
-echo "Installing ROS 2 Jazzy packages..."
-sll 5 sudo apt install ros-${ROS_DISTRO}-desktop -y 
+display_in_container "Installing ROS 2 Packages" apt install ros-${ROS_DISTRO}-desktop -y
 
 # Set up the ROS 2 environment
 echo "Setting up ROS 2 environment..."
@@ -92,14 +82,7 @@ echo "ROS 2 installation complete!"
 
 # Function to install colcon
 install_colcon() {
-    echo "Installing colcon and necessary dependencies..."
-    sll 5 sudo apt update && sudo apt install -y python3-colcon-common-extensions 
-    if [ $? -eq 0 ]; then
-        echo "colcon and dependencies installed successfully."
-    else
-        echo "Failed to install colcon. Please check your system configuration and try again."
-        exit 1
-    fi
+    display_in_container "Installing colcon and Dependencies" apt update && apt install -y python3-colcon-common-extensions 
 }
 
 # Check if colcon is installed
@@ -143,15 +126,7 @@ fi
 cd "$workspace_path" || exit
 
 # Initialize the workspace
-echo "Initializing ROS 2 workspace with colcon..."
-sll 5 colcon build --packages-select none &> colcon_build.log  
-if [ $? -eq 0 ]; then
-    echo "Workspace $workspace_name initialized successfully."
-    echo "Colcon build log available at: $workspace_path/colcon_build.log"
-else
-    echo "Workspace initialization failed. Check the log at $workspace_path/colcon_build.log."
-    exit 1
-fi
+display_in_container "Initializing ROS 2 Workspace" colcon build --packages-select none &> colcon_build.log  
 
 # Optionally add workspace setup to .bashrc
 read -p "Do you want to add the workspace setup to your ~/.bashrc? [y/N]: " add_to_bashrc
