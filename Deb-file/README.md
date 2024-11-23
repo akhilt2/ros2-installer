@@ -18,12 +18,11 @@ This repository contains a custom installer package for setting up ROS 2 (Jazzy/
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/mohammedrashithkp/ros2-installer.git
-   cd ros2-installer  ```
+   git clone https://github.com/mohammedrashithkp/ros2-installer.git &&  cd ros2-installer/Deb-file  ```
 
 2. **Install Dependencies**:Run the pre-installation script to install the dependencies using: 
    ```bash
-   sudo chmod +x preinst.sh
+   sudo chmod +x preinst.sh &&
    ./preinst.sh ```
 
 3. **Install the package**: After building, you can install the .deb package using:
@@ -37,5 +36,5 @@ This repository includes a GitHub Actions workflow to automatically build and pu
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
