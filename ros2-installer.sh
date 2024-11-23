@@ -42,7 +42,7 @@ check_os_version() {
         echo "Supported OS: Ubuntu 24.04 (Noble). Proceeding with ROS 2 Jazzy setup."
     # Humble and Iron support only Ubuntu 22.04 (Jammy)
     elif [[ "$VERSION" == "jammy" ]]; then
-        read -p "Enter ROS2 Distro to be installed:(humble/iron) " $ROS_DISTRO
+        read -p "Enter ROS2 Distro to be installed:(humble/iron) " ROS_DISTRO
         echo "Supported OS: Ubuntu 22.04 (Jammy). Proceeding with ROS 2 $ROS_DISTRO setup."
     else
         echo "Unsupported OS version. This script supports only Ubuntu 22.04 (Jammy) or Ubuntu 24.04 (Noble)."
@@ -70,16 +70,14 @@ sll 5 apt-get update -y
 
 
 # Add the ROS 2 repository depending on the version
-if [[ "$ROS_DISTRO" == "jazzy or humble or iron" ]]; then
-    # Adding ROS 2  repository
-    echo "Adding ROS 2  repository..."
-    sll 5 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg  | tail -n 5
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-fi
+echo "Adding ROS 2  repository..."
+sll 5 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg  
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
 
 # Update the system after adding the ROS repository
 echo "Updating package lists..."
-sll 5 sudo apt update | tail -n 5
+sll 5 sudo apt update 
 
 # Install the relevant ROS 2 packages
 echo "Installing ROS 2 Jazzy packages..."
@@ -87,7 +85,7 @@ sll 5 sudo apt install ros-${ROS_DISTRO}-desktop -y
 
 # Set up the ROS 2 environment
 echo "Setting up ROS 2 environment..."
-sudo chmod +x /opt/ros/${ROS_DISTRO}/.setup.bash
+sudo chmod +x /opt/ros/${ROS_DISTRO}/setup.bash
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
 echo "ROS 2 installation complete!"
