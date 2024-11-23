@@ -1,11 +1,4 @@
 
-### 2. **Makefile**
-
-The `Makefile` will automate the process of building the `.deb` package. It assumes you have `dpkg-deb` and other necessary tools for creating Debian packages installed.
-
-```makefile
-# Makefile to build ROS 2 Installer .deb package
-
 # Set version and architecture
 VERSION = 1.0.0
 ARCH = amd64
@@ -14,7 +7,7 @@ DEB_DIR = debian
 DEB_FILE = $(PKG_NAME)_$(VERSION)_$(ARCH).deb
 
 # Specify the root directory for the package
-ROOT_DIR = $(shell pwd)
+ROOT_DIR = $(shell pwd)/Deb-file
 
 # Prepare the package structure
 DEB_STRUCTURE = $(ROOT_DIR)/$(DEB_DIR)
