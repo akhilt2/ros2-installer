@@ -9,9 +9,12 @@ Disclaimer: This is not ROS2 official Distribution .This is a file for installs 
 
 ## Installation options
 
-1. [Bash-Script](./ros2-installer.sh)
-2. [Debian](./Deb-file)
-3. [Snap](./Snap-file)
+
+|Sl.No|Options | Status |
+|---|-----|---|
+|1| [Bash-Script](#installation-procedure)| Stable|
+|2| [Debian](./Deb-file)| In Development |
+|3| [Snap](./Snap-file)| In Development |
 
 ## Installation Procedure
 
