@@ -8,7 +8,29 @@ get_ubuntu_version() {
     echo $VERSION_CODENAME
 }
 
+sll() {
+    local num_lines=$1  # Number of lines to show
+    shift               # Remove the first argument (num_lines) from the list
+    local command="$@"  # Remaining arguments are the command to execute
 
+    # Array to store the last N lines
+    local output=()
+
+    # Run the command and process its output
+    eval "$command" | while read -r line; do
+        # Append the line to the output array
+        output+=("$line")
+
+        # Remove the oldest line if the array exceeds the limit
+        if [ "${#output[@]}" -gt "$num_lines" ]; then
+            unset output[0]
+        fi
+
+        # Clear the screen and display the last N lines
+        clear
+        printf "%s\n" "${output[@]}"
+    done
+}
 
 # Check if the current OS version is supported
 check_os_version() {
@@ -33,8 +55,8 @@ check_os_version
 
 # Ensure system dependencies are met
 echo "Ensuring system dependencies..."
-apt-get update -y | tail -n 5
-apt-get install -y curl software-properties-common locales | tail -n 5
+sll 5 apt-get update -y
+sll 5 apt-get install -y curl software-properties-common locales 
 
 # Set up locales
 echo "Setting up locales..."
@@ -44,24 +66,24 @@ export LANG=en_US.UTF-8
 
 # Update package lists to include the new repository
 echo "Updating package lists..."
-apt-get update -y | tail -n 5
+sll 5 apt-get update -y 
 
 
 # Add the ROS 2 repository depending on the version
 if [[ "$ROS_DISTRO" == "jazzy or humble or iron" ]]; then
     # Adding ROS 2  repository
     echo "Adding ROS 2  repository..."
-    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg  | tail -n 5
+    sll 5 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg  | tail -n 5
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 fi
 
 # Update the system after adding the ROS repository
 echo "Updating package lists..."
-sudo apt update | tail -n 5
+sll 5 sudo apt update | tail -n 5
 
 # Install the relevant ROS 2 packages
 echo "Installing ROS 2 Jazzy packages..."
-sudo apt install ros-${ROS_DISTRO}-desktop -y | tail -n 5
+sll 5 sudo apt install ros-${ROS_DISTRO}-desktop -y 
 
 # Set up the ROS 2 environment
 echo "Setting up ROS 2 environment..."
@@ -73,7 +95,7 @@ echo "ROS 2 installation complete!"
 # Function to install colcon
 install_colcon() {
     echo "Installing colcon and necessary dependencies..."
-    sudo apt update && sudo apt install -y python3-colcon-common-extensions | tail -n 5
+    sll 5 sudo apt update && sudo apt install -y python3-colcon-common-extensions 
     if [ $? -eq 0 ]; then
         echo "colcon and dependencies installed successfully."
     else
@@ -124,7 +146,7 @@ cd "$workspace_path" || exit
 
 # Initialize the workspace
 echo "Initializing ROS 2 workspace with colcon..."
-colcon build --packages-select none &> colcon_build.log  | tail -n 5
+sll 5 colcon build --packages-select none &> colcon_build.log  
 if [ $? -eq 0 ]; then
     echo "Workspace $workspace_name initialized successfully."
     echo "Colcon build log available at: $workspace_path/colcon_build.log"
