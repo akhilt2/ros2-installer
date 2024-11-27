@@ -45,8 +45,11 @@ check_os_version() {
         read -p "Enter ROS2 Distro to be installed (humble/iron): " ROS_DISTRO
         echo "Supported OS: Ubuntu 22.04 (Jammy). Proceeding with ROS 2 $ROS_DISTRO setup."
     else
-        echo "Unsupported OS version. This script supports only Ubuntu 22.04 (Jammy) or Ubuntu 24.04 (Noble)."
-        exit 1
+	read -p  "Unsupported OS version. This script supports only Ubuntu 22.04 (Jammy) or Ubuntu 24.04 (Noble).Do you still wish to install anyway(y/n): " override
+        if [["$override" == "y"]];then
+		read -p "Which version do you wish to install (jazzy/humble/iron): " ROS_DISTRO
+	else
+		exit 1
     fi
 }
 
@@ -102,7 +105,7 @@ read -p "Enter the workspace name (default: $workspace_name): " custom_workspace
 workspace_name="${custom_workspace_name:-$workspace_name}"
 
 # Get the Desktop Directory
-current_dir=$(/home/${USER}/Desktop)
+current_dir=$(/home/${SUDO_USER}/Desktop)
 
 # Full path to the workspace
 workspace_path="$current_dir/$workspace_name"
