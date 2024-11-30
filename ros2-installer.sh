@@ -106,7 +106,9 @@ read -p "Enter the workspace name (default: $workspace_name): " custom_workspace
 workspace_name="${custom_workspace_name:-$workspace_name}"
 
 # Get the Desktop Directory
-current_dir=$(/home/${SUDO_USER}/Desktop)
+desktop_dir="/home/${SUDO_USER}/Desktop"
+read -p "Enter the workspace path (default: $desktop_dir): " custom_workspace_dir
+current_dir="${custom_workspace_dir:-$desktop_dir}"
 
 # Full path to the workspace
 workspace_path="$current_dir/$workspace_name"
@@ -141,4 +143,3 @@ fi
 
 # Final message
 echo "ROS 2 workspace setup completed. Workspace path: $workspace_path"
-
