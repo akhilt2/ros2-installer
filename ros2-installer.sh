@@ -46,10 +46,11 @@ check_os_version() {
         echo "Supported OS: Ubuntu 22.04 (Jammy). Proceeding with ROS 2 $ROS_DISTRO setup."
     else
 	read -p  "Unsupported OS version. This script supports only Ubuntu 22.04 (Jammy) or Ubuntu 24.04 (Noble).Do you still wish to install anyway(y/n): " override
-        if [["$override" == "y"]];then
+        if [[ "$override" == "y" ]];then
 		read -p "Which version do you wish to install (jazzy/humble/iron): " ROS_DISTRO
 	else
 		exit 1
+	fi
     fi
 }
 
