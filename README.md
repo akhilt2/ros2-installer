@@ -1,5 +1,5 @@
 
-Disclaimer: This is not ROS2 official Distribution .This is a file for installs from the official ROS2 Repositories.
+Disclaimer: This is not ROS2 official Distribution .This is a file that installs from the official ROS2 Repositories.
 
 ## Who is it for
 - Beginners who are starting out ROS2 and are not completelty comfortable with terminal
