@@ -29,10 +29,12 @@ display_in_container() {
 }
 
 # Function to get the Ubuntu version codename
+
 get_ubuntu_version() {
-    VERSION_CODENAME=$(lsb_release -c | awk '{print $2}')
+    VERSION_CODENAME=$(cat /etc/os-release | grep UBUNTU_CODENAME | cut -d= -f2)
     echo $VERSION_CODENAME
 }
+
 
 # Check if the current OS version is supported
 check_os_version() {
